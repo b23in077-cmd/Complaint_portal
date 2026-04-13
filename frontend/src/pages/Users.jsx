@@ -1,106 +1,149 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
+import Navbar from "../components/Navbar";
 
 function Users() {
   const [users, setUsers] = useState([]);
-
   const token = localStorage.getItem("token");
-  
-  // ✅ Fetch users
+
   const fetchUsers = async () => {
-  try {
-    const token = localStorage.getItem("token");
-
-    const res = await axios.get("http://localhost:5000/api/users", {
-      headers: {
-        Authorization: `Bearer ${token}`
-      }
-    });
-
-    console.log("RESPONSE:", res.data);
-    setUsers(res.data);
-
-  } catch (err) {
-    console.error("ERROR:", err.response?.data || err.message);
-  }
-};
-
-  // ✅ Delete user
-  const deleteUser = async (id) => {
     try {
-      await axios.delete(`http://localhost:5000/api/users/${id}`, {
-        headers: { Authorization: token }
-      });
+      const res = await axios.get(
+        "http://localhost:5000/api/users",
+        {
+          headers: { Authorization: "Bearer " + token }
+        }
+      );
+      setUsers(res.data);
+    } catch {
+      alert("Failed to fetch users");
+    }
+  };
 
-      // refresh
-      fetchUsers();
-    } catch (err) {
+  // 🔥 DELETE USER
+  const deleteUser = async (id) => {
+    if (!window.confirm("Are you sure you want to delete this user?")) return;
+
+    try {
+      await axios.delete(
+        `http://localhost:5000/api/users/${id}`,
+        {
+          headers: { Authorization: "Bearer " + token }
+        }
+      );
+
+      fetchUsers(); // refresh list
+    } catch {
       alert("Delete failed");
     }
   };
 
+  // 🔐 ADMIN CHECK
   useEffect(() => {
-  const token = localStorage.getItem("token");
+    if (!token) {
+      window.location.href = "/";
+      return;
+    }
 
-  if (!token) {
-    window.location.href = "/";
-    return;
-  }
+    const payload = JSON.parse(atob(token.split(".")[1]));
 
-  const payload = JSON.parse(atob(token.split(".")[1]));
+    if (payload.role !== "admin") {
+      window.location.href = "/";
+      return;
+    }
 
-  if (payload.role !== "admin") {
-    window.location.href = "/";
-  }
+    fetchUsers();
+  }, []);
 
-}, []);
+  return (
+    <div>
+      <Navbar />
 
- return (
-  <div style={{ padding: "20px", color: "white" }}>
-    <h2>All Users 👥</h2>
+      <div style={styles.container}>
+        <h2 style={styles.heading}>All Users 👥</h2>
 
-    {users.length === 0 ? (
-      <p style={{ marginTop: "20px", color: "#aaa" }}>
-        No users found. Register some users to display here.
-      </p>
-    ) : (
-      users.map((u) => (
-        <div key={u._id} style={styles.card}>
-          <div>
-            <p><b>Name:</b> {u.name}</p>
-            <p><b>Email:</b> {u.email}</p>
-          </div>
+        {users.length === 0 ? (
+          <p style={{ color: "#aaa" }}>No users found.</p>
+        ) : (
+          users.map((user) => (
+            <div key={user._id} style={styles.card}>
+              
+              {/* LEFT INFO */}
+              <div>
+                <p style={styles.email}>{user.email}</p>
+                <span style={{
+                  ...styles.role,
+                  background:
+                    user.role === "admin" ? "#ff4d4d" : "#17a2b8"
+                }}>
+                  {user.role}
+                </span>
+              </div>
 
-          <button
-            onClick={() => deleteUser(u._id)}
-            style={styles.deleteBtn}
-          >
-            Delete
-          </button>
-        </div>
-      ))
-    )}
-  </div>
-);
+              {/* RIGHT ACTION */}
+              <button
+                style={styles.deleteBtn}
+                onClick={() => deleteUser(user._id)}
+              >
+                🗑 Delete
+              </button>
+
+            </div>
+          ))
+        )}
+      </div>
+    </div>
+  );
 }
 
 const styles = {
+  container: {
+    padding: "25px"
+  },
+
+  heading: {
+    color: "white",
+    marginBottom: "20px"
+  },
+
   card: {
-    background: "#222",
-    padding: "15px",
-    margin: "10px 0",
-    borderRadius: "8px",
+    background: "rgba(255,255,255,0.08)",
+    backdropFilter: "blur(10px)",
+    borderRadius: "12px",
+    padding: "15px 20px",
+    marginBottom: "15px",
     display: "flex",
     justifyContent: "space-between",
-    alignItems: "center"
-  },
-  deleteBtn: {
-    background: "red",
+    alignItems: "center",
     color: "white",
+    boxShadow: "0 4px 20px rgba(0,0,0,0.3)",
+    transition: "0.3s"
+  },
+
+  email: {
+    margin: 0,
+    fontSize: "16px",
+    fontWeight: "500"
+  },
+
+  role: {
+    padding: "4px 10px",
+    borderRadius: "20px",
+    fontSize: "12px",
+    marginTop: "6px",
+    display: "inline-block",
+    color: "white"
+  },
+
+  deleteBtn: {
+    background: "linear-gradient(90deg, #ff4d4d, #ff1a1a)",
     border: "none",
-    padding: "8px 12px",
-    borderRadius: "5px",
-    cursor: "pointer"
+    padding: "8px 14px",
+    borderRadius: "8px",
+    color: "white",
+    cursor: "pointer",
+    fontWeight: "bold",
+    transition: "0.3s"
   }
 };
 

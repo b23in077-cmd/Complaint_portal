@@ -58,18 +58,12 @@ export const updateStatus = async (req, res) => {
     const complaint = await Complaint.findById(req.params.id);
 
     if (!complaint) {
-      return res.status(404).json({ msg: "Not found" });
+      return res.status(404).json({ msg: "Complaint not found" });
     }
 
-    // ✅ Update status
-    if (status) {
-      complaint.status = status;
-    }
-
-    // ✅ Update priority (NEW)
-    if (priority) {
-      complaint.priority = priority;
-    }
+    // ✅ Update only if provided
+    if (status) complaint.status = status;
+    if (priority) complaint.priority = priority;
 
     await complaint.save();
 
