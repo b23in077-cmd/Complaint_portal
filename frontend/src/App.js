@@ -1,0 +1,25 @@
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import Login from "./pages/Login";
+import Register from "./pages/Register";
+import Dashboard from "./pages/Dashboard";
+import CreateComplaint from "./pages/CreateComplaint";
+import Auth from "./pages/Auth";
+import AdminDashboard from "./pages/AdminDashboard";
+import Users from "./pages/Users";
+
+function App() {
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/create" element={<CreateComplaint />} />
+        <Route path="/admin" element={<AdminDashboard />} />
+        <Route path="/users" element={<Users />} />
+      </Routes>
+    </BrowserRouter>
+  );
+}
+
+export default App;

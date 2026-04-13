@@ -1,0 +1,65 @@
+body {
+  margin: 0;
+  font-family: "Poppins", sans-serif;
+  background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+  color: white;
+}
+
+/* CONTAINER */
+.container {
+  padding: 30px;
+}
+
+/* GLASS CARD */
+.card {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border-radius: 15px;
+  padding: 20px;
+  margin: 15px 0;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+  transition: 0.3s;
+  animation: fadeIn 0.5s ease;
+}
+
+.card:hover {
+  transform: scale(1.02);
+}
+
+/* BUTTON */
+button {
+  padding: 8px 15px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  background: linear-gradient(90deg, #00c6ff, #0072ff);
+  color: white;
+  transition: 0.3s;
+}
+
+button:hover {
+  transform: scale(1.05);
+}
+
+/* INPUT */
+input, select {
+  padding: 10px;
+  border-radius: 8px;
+  border: none;
+  margin: 5px 0;
+}
+
+/* ANIMATION */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+canvas {
+  max-width: 100%;
+}
