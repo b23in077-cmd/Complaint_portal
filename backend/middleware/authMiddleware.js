@@ -24,7 +24,7 @@ const authMiddleware = (req, res, next) => {
     }
 
     // ✅ Verify token
-    const decoded = jwt.verify(token, "secret123");
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
     req.user = decoded; // contains id + role
 

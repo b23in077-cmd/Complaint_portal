@@ -30,7 +30,7 @@ export const register = async (req, res) => {
     // ✅ AUTO LOGIN AFTER REGISTER
     const token = jwt.sign(
       { id: user._id, role: user.role },
-      "secret123",
+      process.env.JWT_SECRET,
       { expiresIn: "1d" }
     );
 
@@ -51,7 +51,7 @@ export const login = async (req, res) => {
     if (email === "Deekshitha" && password === "deekshitha1") {
       const token = jwt.sign(
         { id: "admin123", role: "admin" },
-        "secret123",
+        process.env.JWT_SECRET,
         { expiresIn: "1d" }
       );
 
@@ -85,7 +85,7 @@ export const login = async (req, res) => {
     // ✅ create token
     const token = jwt.sign(
       { id: user._id, role: user.role },
-      "secret123",
+      process.env.JWT_SECRET,
       { expiresIn: "1d" }
     );
 
